@@ -94,7 +94,7 @@ NSString *const CCHLinkAttributeName = @"CCHLinkAttributeName";
     }
     
     UIGraphicsBeginImageContextWithOptions(self.bounds.size, NO, self.window.screen.scale);
-
+    
     // Draw rectangles for all links
     CGContextRef context = UIGraphicsGetCurrentContext();
     UIGraphicsPushContext(context);
@@ -107,7 +107,7 @@ NSString *const CCHLinkAttributeName = @"CCHLinkAttributeName";
             }];
         }
     }];
-
+    
     UIGraphicsPopContext();
     
     // Draw text
@@ -134,24 +134,12 @@ NSString *const CCHLinkAttributeName = @"CCHLinkAttributeName";
     [self setAttributedText:self.attributedText];
 }
 
-- (void)setAttributedText:(NSAttributedString *)attributedText
-{
-    NSMutableAttributedString *mutableAttributedText = [attributedText mutableCopy];
-    [mutableAttributedText enumerateAttribute:CCHLinkAttributeName inRange:NSMakeRange(0, attributedText.length) options:0 usingBlock:^(id value, NSRange range, BOOL *stop) {
-        if (value) {
-            [mutableAttributedText addAttributes:self.linkTextAttributes range:range];
-        }
-    }];
-    
-    [super setAttributedText:mutableAttributedText];
-}
-
 - (void)enumerateViewRectsForRanges:(NSArray *)ranges usingBlock:(void (^)(CGRect rect, NSRange range, BOOL *stop))block
 {
     if (!block) {
         return;
     }
-
+    
     for (NSValue *rangeAsValue in ranges) {
         NSRange range = rangeAsValue.rangeValue;
         NSRange glyphRange = [self.layoutManager glyphRangeForCharacterRange:range actualCharacterRange:NULL];
@@ -250,7 +238,7 @@ NSString *const CCHLinkAttributeName = @"CCHLinkAttributeName";
     
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
-
+    
     [layer setContents:(id)[image CGImage]];
     self.layer.mask = layer;
 }
@@ -292,14 +280,11 @@ NSString *const CCHLinkAttributeName = @"CCHLinkAttributeName";
         [rangeValuesForTouchDown addObject:[NSValue valueWithRange:range]];
         
         NSMutableAttributedString *attributedText = [self.attributedText mutableCopy];
-        for (NSString *attribute in self.linkTextAttributes) {
-            [attributedText removeAttribute:attribute range:range];
-        }
         [attributedText addAttributes:self.linkTextTouchAttributes range:range];
         [super setAttributedText:attributedText];
-
+        
         if (self.linkCornerRadius > 0) {
-          [self drawRoundedCornerForRange:range];
+            [self drawRoundedCornerForRange:range];
         }
     }];
     
@@ -315,7 +300,6 @@ NSString *const CCHLinkAttributeName = @"CCHLinkAttributeName";
         for (NSString *attribute in self.linkTextTouchAttributes) {
             [attributedText removeAttribute:attribute range:range];
         }
-        [attributedText addAttributes:self.linkTextAttributes range:range];
     }
     [super setAttributedText:attributedText];
     self.layer.mask = nil;
@@ -330,13 +314,13 @@ NSString *const CCHLinkAttributeName = @"CCHLinkAttributeName";
             [self.linkDelegate linkTextView:self didTapLinkWithValue:value];
         }
     }
-//    
-//    [self enumerateLinkRangesContainingLocation:location usingBlock:^(NSRange range) {
-//        if ([self.linkDelegate respondsToSelector:@selector(linkTextView:didTapLinkWithValue:)]) {
-//            id value = [self.attributedText attribute:CCHLinkAttributeName atIndex:range.location effectiveRange:NULL];
-//            [self.linkDelegate linkTextView:self didTapLinkWithValue:value];
-//        }
-//    }];
+    //
+    //    [self enumerateLinkRangesContainingLocation:location usingBlock:^(NSRange range) {
+    //        if ([self.linkDelegate respondsToSelector:@selector(linkTextView:didTapLinkWithValue:)]) {
+    //            id value = [self.attributedText attribute:CCHLinkAttributeName atIndex:range.location effectiveRange:NULL];
+    //            [self.linkDelegate linkTextView:self didTapLinkWithValue:value];
+    //        }
+    //    }];
 }
 
 - (void)didLongPressAtRangeValues:(NSArray *)rangeValues
@@ -348,13 +332,13 @@ NSString *const CCHLinkAttributeName = @"CCHLinkAttributeName";
             [self.linkDelegate linkTextView:self didLongPressLinkWithValue:value];
         }
     }
-
-//    [self enumerateLinkRangesContainingLocation:location usingBlock:^(NSRange range) {
-//        if ([self.linkDelegate respondsToSelector:@selector(linkTextView:didLongPressLinkWithValue:)]) {
-//            id value = [self.attributedText attribute:CCHLinkAttributeName atIndex:range.location effectiveRange:NULL];
-//            [self.linkDelegate linkTextView:self didLongPressLinkWithValue:value];
-//        }
-//    }];
+    
+    //    [self enumerateLinkRangesContainingLocation:location usingBlock:^(NSRange range) {
+    //        if ([self.linkDelegate respondsToSelector:@selector(linkTextView:didLongPressLinkWithValue:)]) {
+    //            id value = [self.attributedText attribute:CCHLinkAttributeName atIndex:range.location effectiveRange:NULL];
+    //            [self.linkDelegate linkTextView:self didLongPressLinkWithValue:value];
+    //        }
+    //    }];
 }
 
 @end
